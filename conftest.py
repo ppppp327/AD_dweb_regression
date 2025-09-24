@@ -13,10 +13,7 @@ def browser() -> Browser:
 # 컨텍스트 fixture (브라우저 환경)
 @pytest.fixture(scope="function")
 def context(browser: Browser) -> BrowserContext:
-    context = browser.new_context(
-        device_scale_factor=1,
-        locale="ko-KR"
-    )
+    context = browser.new_context()
 
     # navigator.webdriver 우회
     context.add_init_script("""
