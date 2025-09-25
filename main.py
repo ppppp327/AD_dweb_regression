@@ -78,7 +78,7 @@ workspace_url = "https://adb-3951005985438017.17.azuredatabricks.net"
 access_token = ""
 warehouse_id = "d42f11fa1dd58612"
 
-sql = "select 'aiclk',dt,cguid,* from baikali1xs.ad_ats_silver.ub_ra_click_gmkt where dt >='20250922' and item_no ='4534737778' limit 10 ;"
+sql = "select ins_date, cguid from baikali1xs.ad_ats_silver.ub_ad_cpc_click_gmkt where ins_date >='2025-09-25 14:20:00' and item_no ='3408801000' and cguid = '11758672767700009652000000' limit 10 ;"
 
 result = query_databricks(workspace_url, access_token, warehouse_id, sql)
 

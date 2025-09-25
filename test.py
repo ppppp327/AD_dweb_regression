@@ -2,26 +2,32 @@ from pom.SrpPage import Srp
 from pom.VipPage import Vip
 from pom.Etc import Etc
 from utils.db_check import DatabricksSPClient
-
-#pipenv install pytest-asyncio pytest-xdist
-#pipenv run pytest --cache-clear test.py
+from datetime import datetime
+import time
+import json
+from utils.TestTimeLogger import TestTimeLogger
+#pipenv run pytest --cache-clear test.py -s
 
 
 def test_srp_1(page):
     etc = Etc(page)
     srp_page = Srp(page)
-    vip_page = Vip(page)
     db_check = DatabricksSPClient()
+    logger = TestTimeLogger("test_srp.json")
     etc.goto()
     etc.login("cease2504", "asdf12!@")
 
     srp_page.search_product("무선 이어폰")
     srp_page.search_module_by_title("먼저 둘러보세요")
+    logger.record_time("case1", "exposure")
     goodscode = srp_page.assert_item_in_module("먼저 둘러보세요")
+    logger.record_time("case1", "click")
     srp_page.montelena_goods_click(goodscode)
 
-    sql = "select 'aiclk',dt,cguid,* from baikali1xs.ad_ats_silver.ub_ra_click_gmkt where dt >='20250922' and item_no ='4534737778' limit 10 ;"
-
+    # time.sleep(100)
+    #
+    # sql = f"select ins_date, cguid from baikali1xs.ad_ats_silver.ub_ad_cpc_click_gmkt where ins_date >='2025-09-25 14:16:00' and item_no ='{goodscode}' limit 10 ;"
+    #
     # a= db_check.query_databricks(sql)
     # print(a)
 
