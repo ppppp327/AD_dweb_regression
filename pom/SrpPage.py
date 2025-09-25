@@ -64,16 +64,12 @@ class Srp():
         """
         runtext = f'SRP > {goodscode} 상품 클릭'
         print("#", runtext, "시작")
-
         element = self.page.locator(f'a[data-montelena-goodscode="{goodscode}"]').nth(0)
-
         # 새 페이지 대기
         with self.page.context.expect_page() as new_page_info:
             element.click()
         new_page = new_page_info.value
-
         url = new_page.url
-        assert goodscode in url, f"상품 번호 {goodscode}가 URL에 포함되어야 합니다"
         print("#", runtext, "종료")
 
         runtext = f'SRP > {goodscode} 상품 이동확인'
