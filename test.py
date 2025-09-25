@@ -1,18 +1,15 @@
 from pom.SrpPage import Srp
-from pom.VipPage import Vip
 from pom.Etc import Etc
 from utils.db_check import DatabricksSPClient
-from datetime import datetime
 import time
 import json
 from utils.TestTimeLogger import TestTimeLogger
+
+
 #pipenv run pytest --cache-clear test.py -s
-
-
 def test_srp_1(page):
     etc = Etc(page)
     srp_page = Srp(page)
-    db_check = DatabricksSPClient()
     logger = TestTimeLogger("test_srp.json")
     etc.goto()
     etc.login("cease2504", "asdf12!@")
@@ -34,18 +31,13 @@ def test_srp_1(page):
 
 
 
-# def test_srp_2(page):
-#     etc = Etc(page)
-#     srp_page = Srp(page)
-#     vip_page = Vip(page)
-#     try:
-#         etc.goto()
-#         etc.login("cease2504", "asdf12!@")
-#
-#         srp_page.search_product("무선 이어폰")
-#         vip_page.select_first_product()
-#         vip_page.click_buy_now()
-#
-#
-#     except Exception as e:
-#         raise e  # 테스트를 실패로 처리
+def test_srp_2(page):
+    db_check = DatabricksSPClient()
+    time.sleep(902)
+    with open("test_srp.json", "r", encoding="utf-8") as f:
+        test_record = json.load(f)
+    goodscode = test_record[0]["case1"]["상품번호"]
+    click_time = test_record[0]["case1"]["click"]
+    sql = f"select ins_date, cguid from baikali1xs.ad_ats_silver.ub_ad_cpc_click_gmkt where ins_date >='{click_time}' and item_no ='{goodscode}' and cguid = '11412244806446005562000000' limit 10 ;"
+    a= db_check.query_databricks(sql)
+    print(a)
