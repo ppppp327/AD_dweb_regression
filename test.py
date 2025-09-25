@@ -21,6 +21,7 @@ def test_srp_1(page):
     srp_page.search_module_by_title("먼저 둘러보세요")
     logger.record_time("case1", "exposure")
     goodscode = srp_page.assert_item_in_module("먼저 둘러보세요")
+    logger.record_goodscode("case1",goodscode)
     logger.record_time("case1", "click")
     srp_page.montelena_goods_click(goodscode)
 
