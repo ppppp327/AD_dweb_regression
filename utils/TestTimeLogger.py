@@ -18,15 +18,16 @@ class TestTimeLogger:
         """기본 JSON 구조 초기화"""
         data = [
             {
-                "case1": {"exposure": "", "click": ""},
-                "case2": {"exposure": "", "click": ""},
-                "case3": {"exposure": "", "click": ""},
+                "case1": {"keyword1":{"exposure": "", "click": "", "상품번호": ""},"keyword2":{"exposure": "", "click": "", "상품번호": ""}},
+                "case2": {"keyword1":{"exposure": "", "click": "", "상품번호": ""},"keyword2":{"exposure": "", "click": "", "상품번호": ""}},
+                "case3": {"keyword1":{"exposure": "", "click": "", "상품번호": ""},"keyword2":{"exposure": "", "click": "", "상품번호": ""}},
+                "case4": {"keyword1":{"exposure": "", "click": "", "상품번호": ""},"keyword2":{"exposure": "", "click": "", "상품번호": ""}},
             }
         ]
         with open(self.json_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
 
-    def record_time(self, case_name: str, action: str):
+    def record_time(self, case_name: str, keyword: str, action: str):
         """
         특정 케이스와 액션(exposure/click)에 현재 시간을 기록
         """
@@ -36,12 +37,16 @@ class TestTimeLogger:
         with open(self.json_path, "r", encoding="utf-8") as f:
             records = json.load(f)
 
-        # 값 업데이트
-        if case_name in records[0]:
-            records[0][case_name][action] = now
-        else:
-            # case_name이 없으면 새로 추가
-            records[0][case_name] = {action: now}
+        # case_name 존재 확인
+        if case_name not in records[0]:
+            records[0][case_name] = {}
+
+        # keyword 존재 확인
+        if keyword not in records[0][case_name]:
+            records[0][case_name][keyword] = {}
+
+        # 상품번호 업데이트
+        records[0][case_name][keyword][action] = now
 
         # 다시 저장
         with open(self.json_path, "w", encoding="utf-8") as f:
@@ -49,7 +54,7 @@ class TestTimeLogger:
 
         print(f"[{case_name}] {action} 기록 완료: {now}")
 
-    def record_goodscode(self, case_name: str, goodscode: str):
+    def record_goodscode(self, case_name: str, keyword: str, goodscode: str):
         """
         특정 케이스와 액션(exposure/click)에 현재 시간을 기록
         """
@@ -57,12 +62,16 @@ class TestTimeLogger:
         with open(self.json_path, "r", encoding="utf-8") as f:
             records = json.load(f)
 
-        # 값 업데이트
-        if case_name in records[0]:
-            records[0][case_name]["상품번호"] = goodscode
-        else:
-            # case_name이 없으면 새로 추가
-            records[0][case_name] = {"상품번호": goodscode}
+        # case_name 존재 확인
+        if case_name not in records[0]:
+            records[0][case_name] = {}
+
+        # keyword 존재 확인
+        if keyword not in records[0][case_name]:
+            records[0][case_name][keyword] = {}
+
+        # 상품번호 업데이트
+        records[0][case_name][keyword]["상품번호"] = goodscode
 
         # 다시 저장
         with open(self.json_path, "w", encoding="utf-8") as f:
