@@ -1,6 +1,6 @@
 import requests
 import time
-import pandas as pd
+
 
 def query_databricks(workspace_url: str, access_token: str, warehouse_id: str, sql: str):
     """
@@ -74,11 +74,11 @@ def query_databricks(workspace_url: str, access_token: str, warehouse_id: str, s
     # return df
 
 
-workspace_url = "https://adb-5971940266401983.3.azuredatabricks.net"
-access_token = "  "
-warehouse_id = "8a389507a5bf8eb6"
+workspace_url = "https://adb-3951005985438017.17.azuredatabricks.net"
+access_token = ""
+warehouse_id = "d42f11fa1dd58612"
 
-sql = "select * from baikald1xs.kafka_silver.ub_ad_cpc_click_gmkt where dt ='20250822' and item_no = '8000052576' and cguid = '11750814611572002332000000'"
+sql = "select 'aiclk',dt,cguid,* from baikali1xs.ad_ats_silver.ub_ra_click_gmkt where dt >='20250922' and item_no ='4534737778' limit 10 ;"
 
 result = query_databricks(workspace_url, access_token, warehouse_id, sql)
 

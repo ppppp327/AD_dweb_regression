@@ -1,30 +1,17 @@
 import requests
 import time
-import pandas as pd
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
 class DatabricksSPClient:
-    def __init__(self, workspace_url, tenant_id, client_id, client_secret, warehouse_id):
-        self.workspace_url = workspace_url.rstrip("/")
-        self.tenant_id = tenant_id
-        self.client_id = client_id
-        self.client_secret = client_secret
-        self.warehouse_id = warehouse_id
-        self.access_token = self.get_access_token()
+    def __init__(self):
 
-    def get_access_token(self):
-        """Service Principal로 OAuth2 토큰 발급"""
-        token_url = f"https://login.microsoftonline.com/{self.tenant_id}/oauth2/v2.0/token"
-        payload = {
-            "grant_type": "client_credentials",
-            "client_id": self.client_id,
-            "client_secret": self.client_secret,
-            "scope": "https://databricks.azure.net/.default"
-        }
-        res = requests.post(token_url, data=payload)
-        res.raise_for_status()
-        return res.json()["access_token"]
+        self.workspace_url = "https://adb-3951005985438017.17.azuredatabricks.net"
+        self.warehouse_id = "d42f11fa1dd58612"
+        self.access_token = os.getenv("secret_key")
 
-    def query_to_dataframe(self, sql: str, wait_timeout="30s"):
+    def query_databricks(self, sql: str, wait_timeout="30s"):
         """Databricks SQL Warehouse에서 쿼리 실행 후 DataFrame으로 반환"""
         headers = {
             "Authorization": f"Bearer {self.access_token}",
@@ -59,7 +46,4 @@ class DatabricksSPClient:
 
         # 3. 결과를 DataFrame으로 변환
         result = state_data.get("result", {})
-        columns = [col["name"] for col in result.get("columns", [])]
-        rows = result.get("data_array", [])
-        df = pd.DataFrame(rows, columns=columns)
-        return df
+        return result

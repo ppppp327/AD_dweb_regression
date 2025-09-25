@@ -9,6 +9,7 @@ requests = "*"
 pytest = "*"
 pytest-asyncio = "*"
 pytest-xdist = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
