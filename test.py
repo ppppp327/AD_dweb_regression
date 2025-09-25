@@ -17,10 +17,13 @@ def test_srp_1(page):
 
     srp_page.search_product("무선 이어폰")
     srp_page.search_module_by_title("먼저 둘러보세요")
+    goodscode = srp_page.assert_item_in_module("먼저 둘러보세요")
+    srp_page.montelena_goods_click(goodscode)
+
     sql = "select 'aiclk',dt,cguid,* from baikali1xs.ad_ats_silver.ub_ra_click_gmkt where dt >='20250922' and item_no ='4534737778' limit 10 ;"
 
-    a= db_check.query_databricks(sql)
-    print(a)
+    # a= db_check.query_databricks(sql)
+    # print(a)
 
 
 
