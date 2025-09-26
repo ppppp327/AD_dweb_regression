@@ -47,7 +47,7 @@ class Srp():
         """
         runtext = f'SRP > {module_title}모듈내 상품 노출 확인'
         print("#", runtext, "시작")
-        child = self.page.get_by_text(module_title)
+        child = self.page.get_by_text(module_title, exact=True)
         parent = child.locator("xpath=../..")
         target = parent.locator("div.box__item-container > div.box__image > a")
         target.scroll_into_view_if_needed()
@@ -85,11 +85,11 @@ class Srp():
     def hybrid_ratio_check(self, parent):
         """
         특정 모듈의 타이틀 텍스트를 통해 해당 모듈 노출 확인하고 그 모듈 엘리먼트를 반환
-        :param (str) module_title : 모듈 타이틀
-        :return: 해당 모듈 element
+        :param (element) parent : 모듈의 element
+        :return:
         :example:
         """
-        runtext = f'SRP > 모듈 노출 확인'
+        runtext = f'SRP > 일반상품 광고상품 비율 확인'
         print("#", runtext, "시작")
         container_divs = parent.locator("> div").all()
 
@@ -110,14 +110,13 @@ class Srp():
                     print(f"{idx}번째 div ✅ 광고 레이어 없음")
         print("#", runtext, "종료")
 
-        return parent
 
     def assert_ad_item_in_hybrid(self, parent):
 
         """
         특정 모듈의 타이틀 텍스트를 통해 해당 모듈내 상품 노출 확인하고 그상품번호 반환
-        :param (str) module_title : 모듈 타이틀
-        :return: 해당 모듈 노출 상품 번호
+        :param (element) parent : 모듈의 element
+        :return (str) goodscode: 상품번호
         :example:
         """
         runtext = f'SRP > 모듈내 광고상품 노출 확인'
