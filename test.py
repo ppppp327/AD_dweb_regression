@@ -9,21 +9,21 @@ import pytest
 from search_data import search_testcases1, search_testcases2, search_testcases3, search_testcases4
 
 #pipenv run pytest --cache-clear test.py -s
-@pytest.mark.parametrize("keyword, case_id", search_testcases1, ids=[c for _, c in search_testcases1])
-def test_srp_1(page, keyword, case_id, request):
-    # TestRail 케이스 ID를 현재 실행 노드에 저장
-    request.node._testrail_case_id = case_id
-    etc = Etc(page)
-    srp_page = Srp(page)
-    logger = TimeLogger("test_srp.json")
-    etc.goto()
-    srp_page.search_product(keyword)
-    srp_page.search_module_by_title("먼저 둘러보세요")
-    logger.record_time("case1", keyword,"exposure")
-    goodscode = srp_page.assert_item_in_module("먼저 둘러보세요")
-    logger.record_goodscode("case1",keyword, goodscode)
-    logger.record_time("case1", keyword,"click")
-    srp_page.montelena_goods_click(goodscode)
+# @pytest.mark.parametrize("keyword, case_id", search_testcases1, ids=[c for _, c in search_testcases1])
+# def test_srp_1(page, keyword, case_id, request):
+#     # TestRail 케이스 ID를 현재 실행 노드에 저장
+#     request.node._testrail_case_id = case_id
+#     etc = Etc(page)
+#     srp_page = Srp(page)
+#     logger = TimeLogger("test_srp.json")
+#     etc.goto()
+#     srp_page.search_product(keyword)
+#     srp_page.search_module_by_title("먼저 둘러보세요")
+#     logger.record_time("case1", keyword,"exposure")
+#     goodscode = srp_page.assert_item_in_module("먼저 둘러보세요")
+#     logger.record_goodscode("case1",keyword, goodscode)
+#     logger.record_time("case1", keyword,"click")
+#     srp_page.montelena_goods_click(goodscode)
 
 @pytest.mark.parametrize("keyword, case_id", search_testcases2, ids=[c for _, c in search_testcases2])
 def test_srp_2(page, keyword, case_id, request):

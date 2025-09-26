@@ -95,7 +95,7 @@ class Srp():
 
         for idx, div in enumerate(container_divs[:10], start=1):
             has_ads = div.locator("div.box__ads-layer").count() > 0
-
+            div.scroll_into_view_if_needed()
             if idx % 2 == 0:  # 짝수 번째
                 if has_ads:
                     print(f"{idx}번째 div ✅ 광고 레이어 존재")
