@@ -1,3 +1,5 @@
+import time
+
 from playwright.sync_api import Page, expect
 
 
@@ -26,9 +28,9 @@ class Srp():
         """
         runtext = f'SRP > {module_title}모듈 노출 확인'
         print("#", runtext, "시작")
-        child = self.page.get_by_text(module_title)
+        child = self.page.get_by_text(module_title, exact=True)
         child.scroll_into_view_if_needed()
-        parent = child.locator("xpath=../..")
+        parent = child.locator("xpath=../../..")
         expect(parent).to_be_visible()
         print("#", runtext, "종료")
 
@@ -45,7 +47,7 @@ class Srp():
         """
         runtext = f'SRP > {module_title}모듈내 상품 노출 확인'
         print("#", runtext, "시작")
-        child = self.page.get_by_text("먼저 둘러보세요")
+        child = self.page.get_by_text(module_title)
         parent = child.locator("xpath=../..")
         target = parent.locator("div.box__item-container > div.box__image > a")
         target.scroll_into_view_if_needed()
@@ -70,6 +72,7 @@ class Srp():
             element.click()
         new_page = new_page_info.value
         url = new_page.url
+        time.sleep(3)
         print("#", runtext, "종료")
 
         runtext = f'SRP > {goodscode} 상품 이동확인'
@@ -79,3 +82,64 @@ class Srp():
 
         return url
 
+    def hybrid_ratio_check(self, parent):
+        """
+        특정 모듈의 타이틀 텍스트를 통해 해당 모듈 노출 확인하고 그 모듈 엘리먼트를 반환
+        :param (str) module_title : 모듈 타이틀
+        :return: 해당 모듈 element
+        :example:
+        """
+        runtext = f'SRP > 모듈 노출 확인'
+        print("#", runtext, "시작")
+        container_divs = parent.locator("> div").all()
+
+        for idx, div in enumerate(container_divs[:10], start=1):
+            has_ads = div.locator("div.box__ads-layer").count() > 0
+
+            if idx % 2 == 0:  # 짝수 번째
+                if has_ads:
+                    print(f"{idx}번째 div ✅ 광고 레이어 존재")
+                else:
+                    print(f"{idx}번째 div ❌ 광고 레이어 없음")
+                    raise
+            else:  # 홀수 번째
+                if has_ads:
+                    print(f"{idx}번째 div ❌ 광고 레이어가 있으면 안 됨")
+                    raise
+                else:
+                    print(f"{idx}번째 div ✅ 광고 레이어 없음")
+        print("#", runtext, "종료")
+
+        return parent
+
+    def assert_ad_item_in_hybrid(self, parent):
+
+        """
+        특정 모듈의 타이틀 텍스트를 통해 해당 모듈내 상품 노출 확인하고 그상품번호 반환
+        :param (str) module_title : 모듈 타이틀
+        :return: 해당 모듈 노출 상품 번호
+        :example:
+        """
+        runtext = f'SRP > 모듈내 광고상품 노출 확인'
+        print("#", runtext, "시작")
+        container_divs = parent.locator("> div").all()
+
+        for idx, div in enumerate(container_divs[:10], start=1):
+            if div.locator("div.box__ads-layer").count() > 0:
+                first_div_with_ads = div
+                print(f"{idx}번째 div에 box__ads-layer 발견")
+                break  # 첫 번째 div만 찾고 루프 종료
+
+        if first_div_with_ads:
+            # box__ads-layer 포함한 상품의 번호 가져오기
+            target = first_div_with_ads.locator("div.box__item-container > div.box__image > a")
+            target.scroll_into_view_if_needed()
+            expect(target).to_be_visible()
+            goodscode = target.get_attribute("data-montelena-goodscode")
+            print("첫 번째 광고상품 번호", goodscode)
+
+        else:
+            print("box__ads-layer가 존재하는 div가 없음")
+        print("#", runtext, "종료")
+
+        return goodscode

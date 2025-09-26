@@ -1,9 +1,10 @@
+
 from pom.SrpPage import Srp
 from pom.Etc import Etc
 from utils.db_check import DatabricksSPClient
 import time
 import json
-from utils.TestTimeLogger import TestTimeLogger
+from utils.TimeLogger import TimeLogger
 import pytest
 from search_data import search_testcases1, search_testcases2, search_testcases3, search_testcases4
 
@@ -14,10 +15,8 @@ def test_srp_1(page, keyword, case_id, request):
     request.node._testrail_case_id = case_id
     etc = Etc(page)
     srp_page = Srp(page)
-    logger = TestTimeLogger("test_srp.json")
+    logger = TimeLogger("test_srp.json")
     etc.goto()
-    etc.login("cease2504", "asdf12!@")
-
     srp_page.search_product(keyword)
     srp_page.search_module_by_title("먼저 둘러보세요")
     logger.record_time("case1", keyword,"exposure")
@@ -26,9 +25,27 @@ def test_srp_1(page, keyword, case_id, request):
     logger.record_time("case1", keyword,"click")
     srp_page.montelena_goods_click(goodscode)
 
+@pytest.mark.parametrize("keyword, case_id", search_testcases2, ids=[c for _, c in search_testcases2])
+def test_srp_2(page, keyword, case_id, request):
+    # TestRail 케이스 ID를 현재 실행 노드에 저장
+    request.node._testrail_case_id = case_id
+    etc = Etc(page)
+    srp_page = Srp(page)
+    logger = TimeLogger("test_srp.json")
+    etc.goto()
+    srp_page.search_product(keyword)
+    parent = srp_page.search_module_by_title("일반상품")
+    logger.record_time("case2", keyword,"exposure")
+    srp_page.hybrid_ratio_check(parent)
+    goodscode = srp_page.assert_ad_item_in_hybrid(parent)
+    logger.record_goodscode("case2",keyword, goodscode)
+    logger.record_time("case2", keyword,"click")
+    srp_page.montelena_goods_click(goodscode)
+
+
 
 #
-# def test_srp_2(page):
+# def test_srp_3(page):
 #     db_check = DatabricksSPClient()
 #     time.sleep(902)
 #     with open("test_srp.json", "r", encoding="utf-8") as f:

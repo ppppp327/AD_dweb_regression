@@ -3,7 +3,7 @@ from datetime import datetime
 from pathlib import Path
 
 
-class TestTimeLogger:
+class TimeLogger:
     def __init__(self, json_path: str = "test_times.json"):
         """
         :param json_path: 기록할 JSON 파일 경로
