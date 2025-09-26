@@ -9,21 +9,28 @@ import pytest
 from search_data import search_testcases1, search_testcases2, search_testcases3, search_testcases4
 
 #pipenv run pytest --cache-clear test.py -s
-# @pytest.mark.parametrize("keyword, case_id", search_testcases1, ids=[c for _, c in search_testcases1])
-# def test_srp_1(page, keyword, case_id, request):
-#     # TestRail 케이스 ID를 현재 실행 노드에 저장
-#     request.node._testrail_case_id = case_id
-#     etc = Etc(page)
-#     srp_page = Srp(page)
-#     logger = TimeLogger("test_srp.json")
-#     etc.goto()
-#     srp_page.search_product(keyword)
-#     srp_page.search_module_by_title("먼저 둘러보세요")
-#     logger.record_time("case1", keyword,"exposure")
-#     goodscode = srp_page.assert_item_in_module("먼저 둘러보세요")
-#     logger.record_goodscode("case1",keyword, goodscode)
-#     logger.record_time("case1", keyword,"click")
-#     srp_page.montelena_goods_click(goodscode)
+@pytest.mark.parametrize("keyword, case_id", search_testcases1, ids=[c for _, c in search_testcases1])
+def test_srp_1(page, keyword, case_id, request):
+    # TestRail 케이스 ID를 현재 실행 노드에 저장
+    request.node._testrail_case_id = case_id
+    etc = Etc(page)
+    srp_page = Srp(page)
+    logger = TimeLogger("test_srp.json")
+    etc.goto()
+    # keyword 로 검색창에 검색
+    srp_page.search_product(keyword)
+    # 먼저 둘러보세요 모듈로 이동 후 확인
+    srp_page.search_module_by_title("먼저 둘러보세요")
+    # 상품 노출 확인시간 저장
+    logger.record_time("case1", keyword,"exposure")
+    # 먼저 둘러보세요 모듈내 광고 상품 곽인
+    goodscode = srp_page.assert_item_in_module("먼저 둘러보세요")
+    # 상품 번호 저장
+    logger.record_goodscode("case1",keyword, goodscode)
+    # 상품 클릭시간 저장
+    logger.record_time("case1", keyword,"click")
+    # 상품 클릭후 해당 vip 이동 확인
+    srp_page.montelena_goods_click(goodscode)
 
 @pytest.mark.parametrize("keyword, case_id", search_testcases2, ids=[c for _, c in search_testcases2])
 def test_srp_2(page, keyword, case_id, request):
@@ -33,13 +40,21 @@ def test_srp_2(page, keyword, case_id, request):
     srp_page = Srp(page)
     logger = TimeLogger("test_srp.json")
     etc.goto()
+    # keyword 로 검색창에 검색
     srp_page.search_product(keyword)
+    # 일반상품 모듈로 이동 후 확인
     parent = srp_page.search_module_by_title("일반상품")
+    # 상품 노출 확인시간 저장
     logger.record_time("case2", keyword,"exposure")
+    # 일반상품 모듈내 광고 상품 비율 곽인
     srp_page.hybrid_ratio_check(parent)
+    # 광고상품 상품 번호 추출
     goodscode = srp_page.assert_ad_item_in_hybrid(parent)
+    # 상품 번호 저장
     logger.record_goodscode("case2",keyword, goodscode)
+    # 상품 클릭시간 저장
     logger.record_time("case2", keyword,"click")
+    # 상품 클릭후 해당 vip 이동 확인
     srp_page.montelena_goods_click(goodscode)
 
 
