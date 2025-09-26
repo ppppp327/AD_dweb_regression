@@ -72,7 +72,7 @@ class Srp():
             element.click()
         new_page = new_page_info.value
         url = new_page.url
-        time.sleep(3)
+        time.sleep(5)
         print("#", runtext, "종료")
 
         runtext = f'SRP > {goodscode} 상품 이동확인'
@@ -139,6 +139,7 @@ class Srp():
 
         else:
             print("box__ads-layer가 존재하는 div가 없음")
+            raise
         print("#", runtext, "종료")
 
         return goodscode
