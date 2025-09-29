@@ -68,28 +68,28 @@ def test_srp_2(page, keyword, case_id, request):
 # def test_wait_15min():
 #     time.sleep(930)
 #
-# @pytest.mark.parametrize("keyword, case_id", search_testcases3, ids=[c for _, c in search_testcases3])
-# def test_srp_3(page, keyword, case_id, request):
-#     # TestRail 케이스 ID를 현재 실행 노드에 저장
-#     request.node._testrail_case_id = case_id
-#     db_check = DatabricksSPClient()
-#     with open("test_srp.json", "r", encoding="utf-8") as f:
-#         test_record = json.load(f)
-#     goodscode = test_record[0]["case1"][keyword]["상품번호"]
-#     click_time = test_record[0]["case1"][keyword]["click"]
-#     sql = f"select ins_date, cguid from baikali1xs.ad_ats_silver.ub_ad_cpc_click_gmkt where ins_date >='{click_time}' and item_no ='{goodscode}' and cguid = '11412244806446005562000000' limit 10 ;"
-#     a= db_check.query_databricks(sql)
-#     print(a)
+@pytest.mark.parametrize("keyword, case_id", search_testcases3, ids=[c for _, c in search_testcases3])
+def test_srp_3(page, keyword, case_id, request):
+    # TestRail 케이스 ID를 현재 실행 노드에 저장
+    request.node._testrail_case_id = case_id
+    db_check = DatabricksSPClient()
+    with open("test_srp.json", "r", encoding="utf-8") as f:
+        test_record = json.load(f)
+    goodscode = test_record[0]["case1"][keyword]["상품번호"]
+    click_time = test_record[0]["case1"][keyword]["click"]
+    # sql = f"select ins_date, cguid from baikali1xs.ad_ats_silver.ub_ad_cpc_click_gmkt where ins_date >='{click_time}' and item_no ='{goodscode}' and cguid = '11412244806446005562000000' limit 10 ;"
+    # a= db_check.query_databricks(sql)
+    print(a)
 
-# @pytest.mark.parametrize("keyword, case_id", search_testcases3, ids=[c for _, c in search_testcases3])
-# def test_srp_4(page, keyword, case_id, request):
-#     # TestRail 케이스 ID를 현재 실행 노드에 저장
-#     request.node._testrail_case_id = case_id
-#     db_check = DatabricksSPClient()
-#     with open("test_srp.json", "r", encoding="utf-8") as f:
-#         test_record = json.load(f)
-#     goodscode = test_record[0]["case2"][keyword]["상품번호"]
-#     click_time = test_record[0]["case2"][keyword]["click"]
-#     sql = f"select ins_date, cguid from baikali1xs.ad_ats_silver.ub_ad_cpc_click_gmkt where ins_date >='{click_time}' and item_no ='{goodscode}' and cguid = '11412244806446005562000000' limit 10 ;"
-#     a= db_check.query_databricks(sql)
-#     print(a)
+@pytest.mark.parametrize("keyword, case_id", search_testcases3, ids=[c for _, c in search_testcases3])
+def test_srp_4(page, keyword, case_id, request):
+    # TestRail 케이스 ID를 현재 실행 노드에 저장
+    request.node._testrail_case_id = case_id
+    db_check = DatabricksSPClient()
+    with open("test_srp.json", "r", encoding="utf-8") as f:
+        test_record = json.load(f)
+    goodscode = test_record[0]["case2"][keyword]["상품번호"]
+    click_time = test_record[0]["case2"][keyword]["click"]
+    # sql = f"select ins_date, cguid from baikali1xs.ad_ats_silver.ub_ad_cpc_click_gmkt where ins_date >='{click_time}' and item_no ='{goodscode}' and cguid = '11412244806446005562000000' limit 10 ;"
+    # a= db_check.query_databricks(sql)
+    print(a)
