@@ -1,4 +1,3 @@
-import pytest
 from playwright.sync_api import sync_playwright, Browser, BrowserContext, Page
 from src.gtas_python_core.gtas_python_core_testrail import *
 from src.gtas_python_core.gtas_python_core_vault import Vault
@@ -80,6 +79,9 @@ def pytest_sessionstart(session):
     """
     global testrail_run_id, case_id_map
     # 1. section_id 직접 사용
+    if testrail_run_id is not None:
+        print(f"[TestRail] 이미 Run(ID={testrail_run_id})이 존재합니다. 새 Run 생성 생략")
+        return
     if not TESTRAIL_SECTION_ID:
         raise RuntimeError("[TestRail] TESTRAIL_SECTION_ID가 정의되지 않았습니다.")
     # 2. 섹션 내 케이스 가져오기
@@ -122,6 +124,11 @@ def pytest_runtest_makereport(item, call):
     case_id = getattr(item, "_testrail_case_id", None)
     if case_id is None or testrail_run_id is None:
         return
+
+    # Cxxxxxx 형태일 경우 숫자만 추출
+    if isinstance(case_id, str) and case_id.startswith("C"):
+        case_id = case_id[1:]
+    case_id = int(case_id)  # API는 int만 허용
 
     if result.when == "call":  # 실행 시점 결과만 기록
         if result.failed:
