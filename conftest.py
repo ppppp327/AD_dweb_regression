@@ -49,7 +49,7 @@ with open('config.json') as config_file:
 TESTRAIL_BASE_URL = config['tr_url']
 TESTRAIL_PROJECT_ID = config['project_id']
 TESTRAIL_SUITE_ID = config['suite_id']
-TESTRAIL_SECTION_NAME = config['section_name']  # ✅ 섹션 이름으로 지정
+TESTRAIL_SECTION_ID = config['section_id']  # ✅ 섹션 이름으로 지정
 TESTRAIL_USER = (Vault("gmarket").get_Kv_credential("authentication/testrail/automation")).get("username")
 TESTRAIL_TOKEN = (Vault("gmarket").get_Kv_credential("authentication/testrail/automation")).get("password")
 
@@ -75,35 +75,23 @@ def testrail_post(endpoint, payload):
 def pytest_sessionstart(session):
     """
     테스트 실행 시작 시:
-    1. 섹션 이름으로 section_id 찾기
-    2. 해당 섹션의 케이스 ID 가져오기
-    3. 그 케이스들로 Run 생성
+    1. section_id 기반으로 해당 섹션의 케이스 ID 가져오기
+    2. 그 케이스들로 Run 생성
     """
     global testrail_run_id, case_id_map
-
-    # 1. 섹션 목록 불러오기
-    sections = testrail_get(f"get_sections/{TESTRAIL_PROJECT_ID}&suite_id={TESTRAIL_SUITE_ID}")
-    section_id = None
-    for s in sections:
-        if s["name"] == TESTRAIL_SECTION_NAME:
-            section_id = s["id"]
-            break
-
-    if not section_id:
-        raise RuntimeError(f"[TestRail] 섹션 '{TESTRAIL_SECTION_NAME}'을(를) 찾을 수 없습니다.")
-
+    # 1. section_id 직접 사용
+    if not TESTRAIL_SECTION_ID:
+        raise RuntimeError("[TestRail] TESTRAIL_SECTION_ID가 정의되지 않았습니다.")
     # 2. 섹션 내 케이스 가져오기
     cases = testrail_get(
-        f"get_cases/{TESTRAIL_PROJECT_ID}&suite_id={TESTRAIL_SUITE_ID}&section_id={section_id}"
+        f"get_cases/{TESTRAIL_PROJECT_ID}&suite_id={TESTRAIL_SUITE_ID}&section_id={TESTRAIL_SECTION_ID}"
     )
     case_ids = [c["id"] for c in cases]
-    case_id_map[TESTRAIL_SECTION_NAME] = case_ids
-
+    case_id_map[TESTRAIL_SECTION_ID] = case_ids
     if not case_ids:
-        raise RuntimeError(f"[TestRail] 섹션 '{TESTRAIL_SECTION_NAME}'에 케이스가 없습니다.")
-
+        raise RuntimeError(f"[TestRail] section_id '{TESTRAIL_SECTION_ID}'에 케이스가 없습니다.")
     # 3. Run 생성
-    run_name = f"자동화 테스트 실행 ({TESTRAIL_SECTION_NAME}) {datetime.now():%Y-%m-%d %H:%M:%S}"
+    run_name = f"자동화 테스트 실행 (section_id={TESTRAIL_SECTION_ID}) {datetime.now():%Y-%m-%d %H:%M:%S}"
     payload = {
         "suite_id": TESTRAIL_SUITE_ID,
         "name": run_name,
@@ -112,8 +100,15 @@ def pytest_sessionstart(session):
     }
     run = testrail_post(f"add_run/{TESTRAIL_PROJECT_ID}", payload)
     testrail_run_id = run["id"]
+    print(f"[TestRail] section_id '{TESTRAIL_SECTION_ID}' Run 생성 완료 (ID={testrail_run_id})")
 
-    print(f"[TestRail] 섹션 '{TESTRAIL_SECTION_NAME}' Run 생성 완료 (ID={testrail_run_id})")
+
+
+
+
+
+
+
 
 
 @pytest.hookimpl(hookwrapper=True)

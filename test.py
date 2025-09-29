@@ -8,7 +8,7 @@ from utils.TimeLogger import TimeLogger
 import pytest
 from search_data import search_testcases1, search_testcases2, search_testcases3, search_testcases4, search_testcases5, search_testcases6
 
-#pipenv run pytest --cache-clear test.py -s
+#--
 @pytest.mark.parametrize("keyword, case_id", search_testcases1, ids=[c for _, c in search_testcases1])
 def test_srp_1(page, keyword, case_id, request):
     # TestRail 케이스 ID를 현재 실행 노드에 저장
