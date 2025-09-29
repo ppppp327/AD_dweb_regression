@@ -80,7 +80,7 @@ def test_srp_2(page, keyword, case_id, request):
 #     sql = f"select ins_date, cguid from baikali1xs.ad_ats_silver.ub_ad_cpc_click_gmkt where ins_date >='{click_time}' and item_no ='{goodscode}' and cguid = '11412244806446005562000000' limit 10 ;"
 #     a= db_check.query_databricks(sql)
 #     print(a)
-#
+
 # @pytest.mark.parametrize("keyword, case_id", search_testcases3, ids=[c for _, c in search_testcases3])
 # def test_srp_4(page, keyword, case_id, request):
 #     # TestRail 케이스 ID를 현재 실행 노드에 저장

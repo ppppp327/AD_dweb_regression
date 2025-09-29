@@ -7,9 +7,9 @@ name = "pypi"
 playwright = "*"
 requests = "*"
 pytest = "*"
-pytest-asyncio = "*"
 pytest-xdist = "*"
 python-dotenv = "*"
+pytest-asyncio = "*"
 
 [dev-packages]
 
